@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>Syllabus – IPHS 400: Frontiers in AI</title>
+<link href="../css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<header class="site-header no-featured-image">
+<div class="header-inner">
+<div class="site-branding"><p class="site-title"><a href="../index.html">IPHS 400: Frontiers in AI</a></p><span class="site-sep">—</span><p class="site-description">Kenyon College — Fall 2026</p></div>
+<nav class="main-nav"><ul>
+<li><a href="../index.html">Home</a></li>
+<li><a class="active" href="../core/syllabus.html">Syllabus</a></li>
+<li><a href="../core/schedule.html">Schedule</a></li>
+<li><a href="../core/assignments.html">Assignments</a></li>
+<li><a href="../core/policies.html">Policies</a></li>
+<li><a href="../core/about.html">About</a></li>
+</ul></nav>
+</div>
+<section class="hero"><h1>Syllabus</h1></section></header>
+
+<main class="content-wrapper">
+<div class="breadcrumbs"><a href="../index.html">Home</a> » <span>Syllabus</span></div>
+<div class="page-content">
+
+<h2>Course Details</h2>
+<table>
+<tr><th>Instructor</th><td>Jon Chun</td></tr>
+<tr><th>Department</th><td>Integrated Program for Humane Studies (IPHS)</td></tr>
+<tr><th>Schedule</th><td>Tu/Th, 2:40–4:00 PM</td></tr>
+<tr><th>Location</th><td>Timberlake #5 (Evans Conference Room)</td></tr>
+<tr><th>Office Hours</th><td>Tu/Th, 1:30–2:30 PM, Timberlake #3, and by appointment</td></tr>
+<tr><th>Credit</th><td>4 credits</td></tr>
+<tr><th>CRN</th><td>80653</td></tr>
+<tr><th>Prerequisites</th><td>IPHS 200, COMP 118, or Permission of Instructor (PI)</td></tr>
+<tr><th>Course Site</th><td><code>https://github.com/jon-chun/theailab-net</code> (materials) and Moodle (quizzes, grades, submissions)</td></tr>
+</table>
+
+<h2>Course Description</h2>
+<p>This upper-division course is a hands-on study of the AI frontier as it stands in late 2026. That frontier is no longer API plumbing or retrieval pipelines. It is <strong>AI software engineering (AI-SWE): coordinating autonomous coding agents through a professional software development lifecycle (SDLC)</strong>. Over the past year the field has moved away from hand-wired API integrations and hand-assembled RAG stacks (now commodity work, and mostly something the agents can do themselves) and toward <strong>harness engineering</strong> — configuring, extending, and orchestrating AI coding agents such as Claude Code and comparable CLI-native tools so they can carry real engineering work end-to-end.</p>
+<p>You build this competency through four mini-projects that stack on each other: your own development environment, agent configuration and custom Skills, agent harness/hook engineering, and a spec-driven SDLC capstone. The semester ends with an original interdisciplinary research project that puts the whole toolchain to work on a question you choose.</p>
+<p>Running alongside the technical work is a discussion of what happens (to labor, to ethics, to what we can know) when agentic systems replace or augment knowledge work. We take that up explicitly in Weeks 3, 8, and 12, and again in the lightning presentations.</p>
+<p><strong>Note:</strong> AI tooling changes on a timescale of weeks, not years. Expect the specific tools, readings, and technical references in this syllabus to be revised during the semester. Core learning objectives, assignment weights, and grading policies will not change without advance notice.</p>
+
+<h2>Course Goals and Learning Outcomes</h2>
+<p>By the end of this course, students will be able to:</p>
+<ol>
+<li>Configure a professional, reproducible development environment (shell, terminal, dotfiles) suitable for agentic software engineering, with sound secrets hygiene</li>
+<li>Install, configure, and work fluently in leading AI interfaces (Web UI / Desktop App / CLI) and best-of-breed developer tooling (VS Code and extensions, GitHub)</li>
+<li>Configure and extend an AI coding agent (CLAUDE.md, custom slash commands, custom Skills, subagents) to reliably perform domain-specific work</li>
+<li>Design and wire agent hooks and harness-level automation (linting, testing, notification, observability, guardrails) around an agentic coding workflow, including basic multi-agent/subagent orchestration</li>
+<li>Execute a complete spec-driven software development lifecycle — plan, decompose, implement, test, review, and optionally deploy — with an AI coding agent, following current industry practice (e.g., GitHub Spec-Kit, OpenSpec, mattpocock-style spec workflows)</li>
+<li>Evaluate the ethical, labor, security, and epistemic implications of agentic AI systems replacing or augmenting knowledge work</li>
+<li>Apply this agentic toolchain to an original interdisciplinary research question in a field such as medicine, law, education, or public policy</li>
+<li>Communicate technical work through documentation, public repositories, live demos, and a professional research poster</li>
+<li>Build a public professional portfolio (GitHub + digital.kenyon.edu/dh) that demonstrates this competency for graduate school or employment</li>
+</ol>
+<p>Outcome 6 is assessed through the ethics discussions in Weeks 3, 8, and 12, related quiz questions, and the lightning presentation. Outcomes 1–5 map to Mini-Projects 1–4; Outcomes 7–9 map to the Final Project.</p>
+
+<h2>Course Readings and Materials</h2>
+<p><strong>Textbooks:</strong> None required. Readings come from current documentation, engineering blog posts, research papers, and tooling repositories. They are updated weekly (the field moves that fast) and posted to the course GitHub repository.</p>
+
+<h3>Hardware and Operating System</h3>
+<ul class="item-list">
+<li>A laptop you can bring to every class session. Mini-Project 1 assumes a Unix-style shell (zsh).</li>
+<li><strong>macOS or Linux</strong> are supported directly. <strong>Windows users must install WSL2 (Ubuntu) during Week 1</strong>; all shell/dotfiles work is done inside WSL2. See the instructor in Week 1 if this is a problem.</li>
+</ul>
+
+<h3>Required Accounts and Subscriptions</h3>
+<p>Set these up during Week 1 using a <strong>personal (non-@kenyon.edu) email address</strong>, so your accounts and portfolio outlive your Kenyon login:</p>
+<table>
+<tr><th>Account</th><th>Cost</th><th>Purpose</th></tr>
+<tr><td>Personal Google (gmail.com) account</td><td>Free</td><td>Identity for the accounts below</td></tr>
+<tr><td>GitHub account</td><td>Free</td><td>All mini-project repositories and portfolio</td></tr>
+<tr><td>Anthropic.com (Claude) subscription</td><td>$20/mo</td><td>Claude Code CLI and web/desktop app — the course's primary agent</td></tr>
+<tr><td>OpenRouter.com account</td><td>Free tier</td><td>Access to leading open-weight/FOSS models for comparison work</td></tr>
+<tr><td>Additional specialized services</td><td>Occasional, as announced</td><td>Announced with at least one week's notice</td></tr>
+</table>
+<p>Budget <strong>no more than ~$150 total</strong> for the semester (about 4 months of the Claude subscription plus occasional extras). Look for student or first-time offers before paying full price; several services discount or waive fees for .edu addresses.</p>
+<p><strong>Financial Hardship:</strong> Students who cannot afford required subscriptions should contact the instructor privately. Alternative arrangements are available and confidential.</p>
+
+<h3>Secrets Hygiene and Agent Safety (required practice for all projects)</h3>
+<p>This course has you publish configuration repositories and give coding agents real permissions on your own machine, so the following are course rules:</p>
+<ul class="item-list">
+<li><strong>Never commit API keys, tokens, or passwords</strong> to any repository, public or private. Keep secrets in environment variables or in a <code>.env</code> file listed in <code>.gitignore</code>, and turn on GitHub secret scanning / push protection for your account. The first leaked key is a learning moment. After that it is a grading deduction.</li>
+<li><strong>Run agents with least privilege.</strong> Do not run an agent in bypass-permissions ("YOLO") mode on a machine or directory holding data you care about. Use a dedicated project directory, rely on git for recovery, and (in MP3) write hooks that deny destructive commands.</li>
+<li><strong>Keep confidential data out of agent context.</strong> Do not paste other people's private information, unpublished third-party research, or College-internal data into commercial AI services.</li>
+<li>Report any accidental leak to the instructor immediately so we can rotate keys. There is no penalty for prompt disclosure.</li>
+</ul>
+
+<h2>Policy on Changes to the Syllabus</h2>
+<p>Given the pace of change in agentic AI tooling, this syllabus — especially the specific readings, tools, and technical references in the weekly schedule — may be updated during the semester. Core learning objectives, assignment weights, and grading policies will not change without advance notice. Changes will be communicated via:</p>
+<ul class="item-list">
+<li>Weekly updates to the course GitHub repository (the authoritative version of the schedule)</li>
+<li>Announcements during class</li>
+<li>Email for significant changes</li>
+</ul>
+<p><strong>Communication:</strong> Email is the best way to reach the instructor outside office hours; expect a response within one business day (longer on weekends). Questions of general interest may be answered to the whole class.</p>
+
+<h2>Summary of Assignments and Weights</h2>
+<table>
+<tr><th>Assignment</th><th>Weight</th><th>Due</th></tr>
+<tr><td>Class Participation (incl. attendance and lightning presentation)</td><td>20%</td><td>Ongoing</td></tr>
+<tr><td>Weekly Quizzes (lowest two dropped)</td><td>30%</td><td>Weekly, in class</td></tr>
+<tr><td>Mini-Project 1 — Dev Environment (Pass/No-Pass)</td><td>5%</td><td>Fri, Sep 4</td></tr>
+<tr><td>Mini-Project 2 — Agent + Skills Config (Pass/No-Pass)</td><td>5%</td><td>Fri, Sep 25</td></tr>
+<tr><td>Mini-Project 3 — Harness + Hooks (graded)</td><td>10%</td><td>Fri, Oct 23 (demos Tu, Oct 27)</td></tr>
+<tr><td>Mini-Project 4 — SDLC Capstone (graded)</td><td>10%</td><td>Fri, Nov 20 (presentations Nov 17/19)</td></tr>
+<tr><td>Final Project proposal (required, ungraded)</td><td>—</td><td>Fri, Nov 13</td></tr>
+<tr><td>Written-exam alternative opt-in deadline</td><td>—</td><td>Fri, Nov 13</td></tr>
+<tr><td>Final Project (poster + code + release form)</td><td>20%</td><td>Exam period, Dec 14–18</td></tr>
+<tr><th>Total</th><th>100%</th><td></td></tr>
+</table>
+<p>All submissions go through Moodle, with a link to a GitHub repository that is either <strong>public or privately shared with the instructor</strong> (add the instructor's GitHub account as a collaborator). Repositories must be accessible at the deadline.</p>
+<p>See <a href="assignments.html">Assignments</a> for the full mini-project descriptions, the Final Project requirements, and the Mini-Project 3 &amp; 4 grading rubric. See <a href="policies.html">Policies</a> for the full Generative AI Use Policy, Late/Missing Work Policy, Attendance Policy, Student Work and External Sharing policy, and College statements (Academic Honesty, Accessibility, Title IX, Wellbeing, Copyright).</p>
+
+<h2>Grading Scale</h2>
+<table>
+<tr><th>Grade</th><th>Percentage</th><th>Description</th></tr>
+<tr><td>A</td><td>90–100%</td><td>Excellent</td></tr>
+<tr><td>B</td><td>80–89%</td><td>Good</td></tr>
+<tr><td>C</td><td>70–79%</td><td>Satisfactory</td></tr>
+<tr><td>D</td><td>60–69%</td><td>Passing</td></tr>
+<tr><td>F</td><td>Below 60%</td><td>Failing</td></tr>
+</table>
+<p>Plus/minus grades are assigned within each band at the instructor's discretion. Grades are posted on Moodle. Students are responsible for checking that all entries are accurate before the end of the exam period.</p>
+
+</div>
+</main>
+<footer class="site-footer">
+<p>IPHS 400: Frontiers in AI · Kenyon College</p>
+</footer>
+</body>
+</html>
