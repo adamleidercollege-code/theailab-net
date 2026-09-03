@@ -56,7 +56,8 @@ jobs:
         run: npm install --no-audit --no-fund --global netlify-cli@21
 
       - name: Deploy site to Netlify (static files, functions, edge functions)
-        run: netlify deploy --prod --no-build --message "GitHub Actions deploy: ${{ github.sha }}"
+        run: |
+          netlify deploy --prod --no-build --message "GitHub Actions deploy ${{ github.sha }}"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
