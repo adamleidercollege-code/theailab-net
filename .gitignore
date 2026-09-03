@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Node / Netlify Functions
+node_modules/
+.netlify/

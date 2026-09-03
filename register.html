@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>Register – IPHS 400: Frontiers in AI</title>
+<link href="css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<header class="site-header no-featured-image">
+<div class="header-inner">
+<div class="site-branding"><p class="site-title"><a href="index.html">IPHS 400: Frontiers in AI</a></p><span class="site-sep">—</span><p class="site-description">Kenyon College — Fall 2026</p></div>
+<nav class="main-nav"><ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="core/syllabus.html">Syllabus</a></li>
+<li><a href="core/schedule.html">Schedule</a></li>
+<li><a href="core/assignments.html">Assignments</a></li>
+<li><a href="core/policies.html">Policies</a></li>
+<li><a href="core/about.html">About</a></li>
+</ul></nav>
+</div>
+<section class="hero"><h1>Register</h1></section></header>
+
+<main class="content-wrapper">
+<div class="page-content">
+
+<p>Create a course account. New accounts are held as <strong>pending</strong> until an admin approves them &mdash; you'll be able to log in once that happens.</p>
+
+<form id="register-form" novalidate>
+<p>
+<label for="name">Full name</label><br/>
+<input id="name" name="name" type="text" autocomplete="name" required/>
+</p>
+<p>
+<label for="username">Username</label><br/>
+<input id="username" name="username" type="text" autocomplete="username" required minlength="3" maxlength="40" pattern="[a-zA-Z0-9._-]{3,40}"/>
+<br/><small>3&ndash;40 characters: letters, numbers, dot, dash, underscore.</small>
+</p>
+<p>
+<label for="password">Password</label><br/>
+<input id="password" name="password" type="password" autocomplete="new-password" required minlength="8"/>
+<br/><small>At least 8 characters.</small>
+</p>
+<p><button type="submit">Register</button></p>
+</form>
+
+<p id="register-message" role="status"></p>
+
+<p><a href="login.html">&larr; Back to Log In</a></p>
+
+</div>
+</main>
+<footer class="site-footer">
+<p>IPHS 400: Frontiers in AI · Kenyon College</p>
+</footer>
+
+<script>
+(function () {
+  var form = document.getElementById("register-form");
+  var message = document.getElementById("register-message");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    message.textContent = "";
+    var name = document.getElementById("name").value.trim();
+    var username = document.getElementById("username").value.trim();
+    var password = document.getElementById("password").value;
+
+    fetch("/.netlify/functions/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: name, username: username, password: password }),
+    })
+      .then(function (res) {
+        return res.json().then(function (data) {
+          return { ok: res.ok, data: data };
+        });
+      })
+      .then(function (result) {
+        if (result.ok) {
+          form.reset();
+          message.textContent = result.data.message;
+        } else {
+          message.textContent = result.data.error || "Registration failed.";
+        }
+      })
+      .catch(function () {
+        message.textContent = "Network error. Please try again.";
+      });
+  });
+})();
+</script>
+</body>
+</html>

@@ -5,9 +5,9 @@ from pathlib import Path
 
 SITE_ROOT = Path(__file__).parent.parent
 
-EXPECTED_TOTAL_PAGES = 22
+EXPECTED_TOTAL_PAGES = 25
 EXPECTED_CORE_FILES = {
-    "about.html", "assignments.html", "policies.html", "schedule.html", "syllabus.html",
+    "about.html", "admin.html", "assignments.html", "policies.html", "schedule.html", "syllabus.html",
 }
 EXPECTED_WEEK_FILES = {f"week-{n:02d}.html" for n in range(1, 16)}
 
@@ -28,7 +28,7 @@ class TestRequiredFiles:
 
 class TestPageCount:
     def test_exact_total_page_count(self, all_html_files):
-        """Site must have exactly 22 HTML pages (index, 404, 5 core, 15 weeks)."""
+        """Site must have exactly 25 HTML pages (index, 404, login, register, 6 core, 15 weeks)."""
         count = len(all_html_files)
         files = [str(f.relative_to(SITE_ROOT)) for f in all_html_files]
         assert count == EXPECTED_TOTAL_PAGES, (
@@ -58,9 +58,14 @@ class TestWeeksDirectoryContents:
         )
 
 
+UNLINKED_AUTH_PAGES = {"login.html", "register.html", "core/admin.html"}
+
+
 class TestReachability:
     def test_all_pages_except_404_reachable_from_index(self, site_root, all_html_files):
-        """BFS from index.html over local <a href> links must reach every page except 404.html."""
+        """BFS from index.html over local <a href> links must reach every page except 404.html
+        and the auth pages (login/register are reached via redirect, not nav links; admin is
+        admin-only and intentionally not linked from public pages)."""
         index = site_root / "index.html"
         visited = set()
         queue = [index.resolve()]
@@ -84,7 +89,10 @@ class TestReachability:
                 if target.exists() and target not in visited:
                     queue.append(target)
 
-        expected_reachable = {f.resolve() for f in all_html_files if f.name != "404.html"}
+        expected_reachable = {
+            f.resolve() for f in all_html_files
+            if f.name != "404.html" and _rel(f) not in UNLINKED_AUTH_PAGES
+        }
         unreached = expected_reachable - visited
         unreached_rel = sorted(_rel(f) for f in unreached)
         assert not unreached_rel, (
