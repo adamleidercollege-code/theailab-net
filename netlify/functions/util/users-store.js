@@ -3,6 +3,11 @@ const { getStore } = require("@netlify/blobs");
 const KEY = "users.json";
 
 function store() {
+  const siteID = process.env.SITE_ID;
+  const token = process.env.NETLIFY_FUNCTIONS_TOKEN || process.env.NETLIFY_API_TOKEN;
+  if (siteID && token) {
+    return getStore({ name: "users", siteID, token });
+  }
   return getStore("users");
 }
 
