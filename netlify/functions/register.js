@@ -1,7 +1,11 @@
 const { loadUsers, saveUsers } = require("./util/users-store");
 const { hashPassword } = require("./util/auth");
+const { sendMail } = require("./util/mail");
+
+const ADMIN_NOTIFY_EMAIL = "jonchun2000@gmail.com";
 
 const USERNAME_RE = /^[a-zA-Z0-9._-]{3,40}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
@@ -18,6 +22,7 @@ exports.handler = async (event) => {
   const username = String(body.username || "").trim().toLowerCase();
   const password = String(body.password || "");
   const name = String(body.name || "").trim();
+  const email = String(body.email || "").trim().toLowerCase();
 
   if (!USERNAME_RE.test(username)) {
     return {
@@ -27,6 +32,9 @@ exports.handler = async (event) => {
   }
   if (password.length < 8) {
     return { statusCode: 400, body: JSON.stringify({ error: "Password must be at least 8 characters." }) };
+  }
+  if (!EMAIL_RE.test(email)) {
+    return { statusCode: 400, body: JSON.stringify({ error: "A valid email address is required (used for password resets)." }) };
   }
 
   const users = await loadUsers();
@@ -38,6 +46,7 @@ exports.handler = async (event) => {
   users[username] = {
     username,
     name: name || username,
+    email,
     salt,
     passwordHash: hash,
     status: "pending",
@@ -45,6 +54,20 @@ exports.handler = async (event) => {
     createdAt: new Date().toISOString(),
   };
   await saveUsers(users);
+
+  await sendMail({
+    to: ADMIN_NOTIFY_EMAIL,
+    subject: `New account request: ${username}`,
+    html: `<p>A new account application is pending approval.</p>
+<ul>
+<li><strong>Username:</strong> ${username}</li>
+<li><strong>Name:</strong> ${name || username}</li>
+<li><strong>Email:</strong> ${email}</li>
+<li><strong>Requested:</strong> ${new Date().toISOString()}</li>
+</ul>
+<p><a href="https://theailab.net/core/admin.html">Review pending accounts</a></p>`,
+    text: `New account application pending approval.\nUsername: ${username}\nName: ${name || username}\nEmail: ${email}\nReview at https://theailab.net/core/admin.html`,
+  }).catch((err) => console.error("Failed to send admin notification email", err));
 
   return {
     statusCode: 201,

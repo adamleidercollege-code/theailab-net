@@ -618,3 +618,14 @@ h1, h2, h3, h4, h5, h6 {
     gap: 0.5rem;
   }
 }
+
+/* ===================== */
+/*   Auth nav additions  */
+/* ===================== */
+.main-nav a.admin-dashboard-link {
+  color: var(--draft);
+  font-weight: 700;
+}
+.main-nav a.admin-dashboard-link:hover {
+  color: var(--accent-dk);
+}

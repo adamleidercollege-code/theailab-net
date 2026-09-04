@@ -5,7 +5,7 @@ from pathlib import Path
 
 SITE_ROOT = Path(__file__).parent.parent
 
-EXPECTED_TOTAL_PAGES = 25
+EXPECTED_TOTAL_PAGES = 28
 EXPECTED_CORE_FILES = {
     "about.html", "admin.html", "assignments.html", "policies.html", "schedule.html", "syllabus.html",
 }
@@ -28,7 +28,8 @@ class TestRequiredFiles:
 
 class TestPageCount:
     def test_exact_total_page_count(self, all_html_files):
-        """Site must have exactly 25 HTML pages (index, 404, login, register, 6 core, 15 weeks)."""
+        """Site must have exactly 28 HTML pages (index, 404, login, register, forgot-password,
+        reset-password, account, 6 core, 15 weeks)."""
         count = len(all_html_files)
         files = [str(f.relative_to(SITE_ROOT)) for f in all_html_files]
         assert count == EXPECTED_TOTAL_PAGES, (
@@ -58,14 +59,18 @@ class TestWeeksDirectoryContents:
         )
 
 
-UNLINKED_AUTH_PAGES = {"login.html", "register.html", "core/admin.html"}
+UNLINKED_AUTH_PAGES = {
+    "login.html", "register.html", "core/admin.html",
+    "forgot-password.html", "reset-password.html", "account.html",
+}
 
 
 class TestReachability:
     def test_all_pages_except_404_reachable_from_index(self, site_root, all_html_files):
         """BFS from index.html over local <a href> links must reach every page except 404.html
-        and the auth pages (login/register are reached via redirect, not nav links; admin is
-        admin-only and intentionally not linked from public pages)."""
+        and the auth pages (login/register/forgot-password/reset-password/account are reached
+        via redirect or direct navigation, not homepage nav links; admin is admin-only and
+        intentionally not linked from public pages)."""
         index = site_root / "index.html"
         visited = set()
         queue = [index.resolve()]

@@ -38,6 +38,11 @@
 <br/><small>3&ndash;40 characters: letters, numbers, dot, dash, underscore.</small>
 </p>
 <p>
+<label for="email">Email</label><br/>
+<input id="email" name="email" type="email" autocomplete="email" required/>
+<br/><small>Used for password reset links.</small>
+</p>
+<p>
 <label for="password">Password</label><br/>
 <input id="password" name="password" type="password" autocomplete="new-password" required minlength="8"/>
 <br/><small>At least 8 characters.</small>
@@ -65,12 +70,13 @@
     message.textContent = "";
     var name = document.getElementById("name").value.trim();
     var username = document.getElementById("username").value.trim();
+    var email = document.getElementById("email").value.trim();
     var password = document.getElementById("password").value;
 
     fetch("/.netlify/functions/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: name, username: username, password: password }),
+      body: JSON.stringify({ name: name, username: username, email: email, password: password }),
     })
       .then(function (res) {
         return res.json().then(function (data) {
