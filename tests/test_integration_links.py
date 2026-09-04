@@ -14,13 +14,18 @@ def _rel(path):
 
 
 def _resolve_href(href, page_path):
-    """Resolve a relative href to an absolute Path, or None for external/anchor/mailto links."""
+    """Resolve a relative or root-relative href to an absolute Path, or None for
+    external/anchor/mailto links. A leading "/" is resolved against SITE_ROOT
+    (site-root-relative), not the filesystem root, matching how a browser
+    resolves an absolute-path href against the site's origin."""
     if not href or href.startswith(("http://", "https://", "mailto:", "#", "javascript:")):
         return None
     href = href.split("#")[0]
     if not href:
         return None
     href = unquote(href)
+    if href.startswith("/"):
+        return (SITE_ROOT / href.lstrip("/")).resolve()
     return (page_path.parent / href).resolve()
 
 

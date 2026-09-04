@@ -220,3 +220,8 @@ __marimo__/
 # Node / Netlify Functions
 node_modules/
 .netlify/
+
+# The generic Python "lib/" ignore rule above would otherwise also match this
+# Netlify Edge Function source directory.
+!netlify/edge-functions/lib/
+!netlify/edge-functions/lib/**

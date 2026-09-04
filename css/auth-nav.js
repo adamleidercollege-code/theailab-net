@@ -13,7 +13,7 @@
 
       if (data.role === "admin") {
         var adminLi = document.createElement("li");
-        adminLi.innerHTML = '<a href="' + rootRelative("core/admin.html") + '" class="admin-dashboard-link">Admin Dashboard</a>';
+        adminLi.innerHTML = '<a href="/admin" class="admin-dashboard-link">Admin Dashboard</a>';
         nav.appendChild(adminLi);
       }
 

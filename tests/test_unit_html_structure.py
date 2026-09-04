@@ -45,7 +45,10 @@ class TestCSSLink:
                 failures.append(f"{_rel(path)}: no stylesheet link")
                 continue
             href = links[0]["href"]
-            target = (path.parent / href).resolve()
+            # A leading "/" is site-root-relative (as a browser resolves it against
+            # the site origin), not filesystem-root-relative.
+            base = SITE_ROOT if href.startswith("/") else path.parent
+            target = (base / href.lstrip("/")).resolve()
             if not target.exists():
                 failures.append(f"{_rel(path)}: href '{href}' does not resolve")
         assert not failures, f"CSS link issues: {failures[:15]}"

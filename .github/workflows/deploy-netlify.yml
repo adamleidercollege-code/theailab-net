@@ -34,6 +34,14 @@ jobs:
       - name: Run pytest
         run: pytest tests/ -v
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run edge function unit tests
+        run: node --test tests/js/*.test.mjs
+
   deploy:
     name: Deploy production site
     needs: test

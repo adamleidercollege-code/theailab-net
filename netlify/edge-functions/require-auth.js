@@ -1,3 +1,5 @@
+import { decideAccess, resolveGateEnabled } from "./lib/decide-access.mjs";
+
 function base64UrlToUint8Array(b64url) {
   const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/");
   const pad = b64.length % 4 === 0 ? "" : "=".repeat(4 - (b64.length % 4));
@@ -52,17 +54,18 @@ export default async (request, context) => {
   const secret = Netlify.env.get("SESSION_SECRET");
   const cookies = parseCookies(request.headers.get("cookie"));
   const session = secret ? await verifySession(cookies.iphs_session, secret) : null;
+  const gateEnabled = resolveGateEnabled(Netlify.env.get("GATE_ENABLED"));
 
-  if (!session) {
-    const url = new URL(request.url);
-    const loginUrl = new URL("/login.html", url.origin);
-    loginUrl.searchParams.set("next", url.pathname);
-    return Response.redirect(loginUrl.toString(), 302);
+  const url = new URL(request.url);
+  const decision = decideAccess({ pathname: url.pathname, gateEnabled, session });
+
+  if (decision.action === "redirect") {
+    return Response.redirect(new URL(decision.redirectTo, url.origin).toString(), 302);
   }
 
   return context.next();
 };
 
 export const config = {
-  path: ["/weeks/*", "/core/*"],
+  path: ["/weeks/*", "/core/*", "/admin"],
 };
