@@ -1,0 +1,41 @@
+# Hard denylist -- wins over the allowlist. Audited against B's tracked
+# files by .github/sync/public_guard.py. Patterns are matched against
+# repo-root-relative tracked paths using fnmatch-style globs (see guard).
+dev/**
+dev-notes/**
+docs-project/**
+docs/**                         # decision 2
+notes/**                        # decision 2
+tools/**                        # private week generator (Phase 3)
+dev/backups/**
+.claude/**
+.codex/**
+.cursor/**
+.gstack/**
+.planning/**
+.sync/**
+.vscode/**
+.gitattributes                  # A-only (merge=ours/theirs drivers for weeks/)
+pyproject.toml                  # A-only (uv project for dev/sync-tests)
+uv.lock                          # A-only (uv lockfile)
+CLAUDE.md
+AGENTS.md
+.env
+.env.*
+.venv/**
+.pytest_cache/**
+__pycache__/**
+node_modules/**
+.DS_Store
+weeks/*.md                      # decision 4 -- all week markdown is private source
+weeks/state.json                # A-side generator state
+*-notes.md
+*.private.*
+*.draft.*
+_drafts/**
+_wip/**
+????-??-??-??????-*.txt         # CLI session transcripts
+*.transcript.*
+*.log
+*.pem
+*.key

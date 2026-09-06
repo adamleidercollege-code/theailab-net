@@ -1,0 +1,47 @@
+# rsync include-list for A -> B publish (.sync/push.sh)
+# Order matters for rsync include/exclude merging: dir rules must precede
+# the file rules nested under them. Final rule is the catch-all "- *".
+#
+# --- site pages (root) ---
++ /index.html
++ /404.html
++ /login.html
++ /register.html
++ /account.html
++ /forgot-password.html
++ /reset-password.html
++ /README.md
++ /LICENSE
+# --- core pages (incl. admin dashboard) ---
++ /core/
++ /core/**.html
+# --- weeks: template + state only; week-NN.html is DASHBOARD-OWNED (see plan §4) ---
++ /weeks/
++ /weeks/_skeleton.html.tmpl
++ /weeks/manifest.json          # B-authoritative; synced A->B only on bootstrap
+# --- assets/runtime ---
++ /css/
++ /css/**
++ /images/
++ /images/**
++ /netlify/
++ /netlify/**
++ /netlify.toml
++ /package.json
++ /package-lock.json
++ /.gitignore
++ /.github/
++ /.github/workflows/
++ /.github/workflows/deploy-netlify.yml
++ /.github/workflows/public-guard.yml
+# --- sync self-audit (B needs to audit itself with the same guard/lists) ---
++ /.github/sync/
++ /.github/sync/**
++ /.githooks/
++ /.githooks/**
+# --- tests (public per decision 2) ---
++ /tests/
++ /tests/**
+- /tests/sync/**                # sync self-tests stay private (live under dev/sync-tests/ anyway)
+# --- everything else denied ---
+- *

@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Shared commit-msg hook (synced A -> B; see .githooks/pre-commit header
+# for the repo-role detection rationale). This hook only enforces
+# anything in repo B (public site); it is a no-op in repo A.
+#
+# Repo B rule: if pre-commit found staged paths matching
+# weeks/week-??.html or weeks/manifest.json (recorded in the temp file
+# .git/.pre-commit-week-paths), the commit message must start with
+# "sync:" or "publish:" unless ALLOW_MANUAL=1 is set in the environment.
+#
+# Usage: invoked by git as `commit-msg <path-to-commit-msg-file>`.
+
+set -euo pipefail
+
+repo_root=$(git rev-parse --show-toplevel)
+msg_file="$1"
+
+is_repo_a=0
+if [ -d "$repo_root/.sync" ]; then
+  is_repo_a=1
+fi
+
+tmp_file="$repo_root/.git/.pre-commit-week-paths"
+
+# Repo A: no week-publish-prefix rule. Nothing to enforce here.
+if [ "$is_repo_a" -eq 1 ]; then
+  rm -f "$tmp_file"
+  exit 0
+fi
+
+# Repo B: enforce prefix only if pre-commit flagged week/manifest paths.
+if [ ! -s "$tmp_file" ]; then
+  rm -f "$tmp_file"
+  exit 0
+fi
+
+if [ "${ALLOW_MANUAL:-0}" = "1" ]; then
+  rm -f "$tmp_file"
+  exit 0
+fi
+
+first_line=$(head -n 1 "$msg_file" || true)
+
+if [[ "$first_line" == sync:* ]] || [[ "$first_line" == publish:* ]]; then
+  rm -f "$tmp_file"
+  exit 0
+fi
+
+echo "commit-msg: staged changes touch weeks/week-NN.html or weeks/manifest.json." >&2
+echo "commit-msg: commit message must start with 'sync:' or 'publish:' (or set ALLOW_MANUAL=1)." >&2
+echo "commit-msg: got: ${first_line}" >&2
+
+rm -f "$tmp_file"
+exit 1
