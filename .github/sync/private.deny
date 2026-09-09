@@ -4,6 +4,7 @@
 dev/**
 dev-notes/**
 docs-project/**
+emails/**                       # private class-email archive (PII: student names/addresses)
 docs/**                         # decision 2
 notes/**                        # decision 2
 tools/**                        # private week generator (Phase 3)
@@ -29,6 +30,10 @@ node_modules/**
 .DS_Store
 weeks/*.md                      # decision 4 -- all week markdown is private source
 weeks/state.json                # A-side generator state
+weeks/test.html                 # stray test page, not linked from index.html or schedule
+exercises/**                    # not linked from index.html; instructor/student materials
+presentations/**                # not linked from index.html; lecture decks and notes
+quizes/**                       # not linked from index.html; quiz drafts and prompts
 *-notes.md
 *.private.*
 *.draft.*
