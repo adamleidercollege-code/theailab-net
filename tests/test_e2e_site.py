@@ -8,7 +8,7 @@ SITE_ROOT = Path(__file__).parent.parent
 
 EXPECTED_TOTAL_PAGES = 22
 EXPECTED_CORE_FILES = {
-    "about.html", "assignments.html", "policies.html", "schedule.html", "syllabus.html",
+    "about.html", "project-overviews.html", "policies.html", "schedule.html", "syllabus.html",
 }
 EXPECTED_WEEK_FILES = {f"week-{n:02d}.html" for n in range(1, 16)}
 
@@ -64,7 +64,7 @@ class TestNoDeadBackendReferences:
     auth UI) was fully removed. This must not silently reappear.
 
     Scoped to actual backend integration points (paths, config files, the
-    identity widget), not the bare word "Netlify" — core/assignments.html
+    identity widget), not the bare word "Netlify" — core/project-overviews.html
     legitimately mentions Netlify as one of several example deploy targets
     in course content, and that's not a backend reference.
     """

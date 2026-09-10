@@ -132,8 +132,11 @@ class TestNoLeftoverBranding:
 
 
 class TestNoDuplicatedOwnedContent:
-    """Regression guard for H2: about/policies/assignments each own one block
-    of content; syllabus.html must link out to it, not duplicate it.
+    """Regression guard for H2: about/policies each own one block of content
+    that syllabus.html must link out to, not duplicate; the Summary of
+    Assignments and Weights table was later moved the other way (it's now
+    owned in full by syllabus.html, and project-overviews.html must not
+    duplicate it).
     """
 
     def test_syllabus_does_not_duplicate_about_description(self, site_root):
@@ -150,12 +153,12 @@ class TestNoDuplicatedOwnedContent:
         assert marker in policies_text
         assert marker not in syllabus_text
 
-    def test_syllabus_does_not_duplicate_assignment_weights(self, site_root):
-        assignments_text = (site_root / "core" / "assignments.html").read_text()
+    def test_project_overviews_does_not_duplicate_assignment_weights(self, site_root):
+        project_overviews_text = (site_root / "core" / "project-overviews.html").read_text()
         syllabus_text = (site_root / "core" / "syllabus.html").read_text()
         marker = "Mini-Project 3 — Harness + Hooks (graded)"
-        assert marker in assignments_text
-        assert marker not in syllabus_text
+        assert marker in syllabus_text
+        assert marker not in project_overviews_text
 
 
 class TestCSSCoverage:
@@ -221,12 +224,18 @@ class TestAccessibility:
         assert not failures, f"Pages missing <main id='main'>: {failures[:15]}"
 
     def test_active_nav_link_has_aria_current(self, nav_pages, parsed_pages):
-        """Every nav link with class="active" must also have aria-current="page"."""
+        """Every nav link with class="active" must also have aria-current="page".
+
+        The current page's indicator lives in nav.main-nav for pages that
+        nav item covers (Home/Syllabus/Schedule/Project Overviews), or in
+        nav.footer-nav for pages reached only via the footer (About,
+        Policies), so both navs are checked.
+        """
         by_path = {p: (t, s) for p, t, s in parsed_pages}
         failures = []
         for path in nav_pages:
             _, soup = by_path[path]
-            active_links = soup.select("nav.main-nav a.active")
+            active_links = soup.select("nav.main-nav a.active, nav.footer-nav a.active")
             if not active_links:
                 failures.append(f"{_rel(path)}: no active nav link found")
                 continue

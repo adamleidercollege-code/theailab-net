@@ -168,6 +168,40 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--accent);
 }
 
+/* Course info widget (top-right of header, all pages) */
+.course-info-box {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 2;
+  max-width: 260px;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-family: var(--fb);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+}
+.course-info-box dl {
+  margin: 0;
+}
+.course-info-box dt {
+  font-weight: 700;
+  color: var(--text-lt);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  margin-top: 0.5rem;
+}
+.course-info-box dt:first-child {
+  margin-top: 0;
+}
+.course-info-box dd {
+  margin: 0 0 0.25rem;
+}
+
 .social-nav {
   margin-top: 1.4rem;
 }
@@ -543,6 +577,30 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--accent);
 }
 
+.footer-rule {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2rem 2rem 0 var(--col-left);
+}
+
+.footer-nav ul {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1.5rem;
+}
+.footer-nav a {
+  color: var(--accent);
+  font-family: var(--fb);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+}
+.footer-nav a:hover {
+  color: var(--accent-dk);
+}
+
 /* ===================== */
 /*   Responsive          */
 /* ===================== */
@@ -589,5 +647,11 @@ h1, h2, h3, h4, h5, h6 {
   .post-nav {
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  .course-info-box {
+    position: static;
+    max-width: none;
+    margin: 1.5rem 1rem 0;
   }
 }
