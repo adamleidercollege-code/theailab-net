@@ -10,7 +10,6 @@ on Moodle.
 
 - **Instructor:** Jon Chun
 - **Schedule:** Tu/Th, 2:40–4:00 PM · Timberlake #5 (Evans Conference Room)
-- **Live site:** _add Netlify URL here once deployed_
 
 ## Repository Structure
 
@@ -27,17 +26,17 @@ on Moodle.
 ├── weeks/                   # One page per week, week-01.html … week-15.html
 ├── css/
 │   └── style.css            # Single shared stylesheet, no build step
-├── tests/                   # pytest suite validating the site
-│   ├── conftest.py
-│   ├── test_unit_html_structure.py
-│   ├── test_integration_links.py
-│   ├── test_e2e_site.py
-│   └── requirements.txt
-└── .github/workflows/       # CI: deploy to Netlify on push to main
+└── tests/                   # pytest suite validating the site
+    ├── conftest.py
+    ├── test_unit_html_structure.py
+    ├── test_integration_links.py
+    ├── test_e2e_site.py
+    └── requirements.txt
 ```
 
-The site is static HTML/CSS with no build step or JS framework. Every page
-shares one stylesheet and a common header/nav/hero/footer skeleton.
+The site is a plain static HTML/CSS site with no build step, no JS framework,
+and no deploy pipeline — just files served as-is. Every page shares one
+stylesheet and a common header/nav/hero/footer skeleton.
 
 ## Local Development
 
@@ -77,22 +76,6 @@ Run a single test file or test:
 pytest tests/test_unit_html_structure.py -v
 pytest tests/test_integration_links.py::TestNavConsistency::test_nav_links_resolve -v
 ```
-
-## Deployment
-
-The site deploys to Netlify automatically on every push to `main` via
-[`.github/workflows/deploy-netlify.yml`](.github/workflows/deploy-netlify.yml).
-The workflow publishes the repository root and requires two repository
-secrets, set under **Settings → Secrets and variables → Actions**:
-
-| Secret | Description |
-|---|---|
-| `NETLIFY_AUTH_TOKEN` | A Netlify personal access token |
-| `NETLIFY_SITE_ID` | The target Netlify site's API ID |
-
-Until those secrets are configured, the workflow run will fail at the deploy
-step — everything else (checkout) will still succeed. Deployment can also be
-triggered manually from the Actions tab (`workflow_dispatch`).
 
 ## Content Source and Provenance
 

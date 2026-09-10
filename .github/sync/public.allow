@@ -24,16 +24,8 @@
 + /css/**
 + /images/
 + /images/**
-+ /netlify/
-+ /netlify/**
-+ /netlify.toml
-+ /package.json
-+ /package-lock.json
 + /.gitignore
 + /.github/
-+ /.github/workflows/
-+ /.github/workflows/deploy-netlify.yml
-+ /.github/workflows/public-guard.yml
 # --- sync self-audit (B needs to audit itself with the same guard/lists) ---
 + /.github/sync/
 + /.github/sync/**
