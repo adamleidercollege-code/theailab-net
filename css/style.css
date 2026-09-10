@@ -81,6 +81,36 @@ img {
   height: auto;
 }
 
+/* Inline SVG icons: small, single-weight, colored via currentColor so they
+   always match the accent/text/muted color already in play at each call
+   site (nav link, heading, dt label, etc.) rather than introducing new
+   colors. Sized in em so one rule scales correctly from tiny dt labels up
+   to the large hero/heading text. */
+.icon {
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+  margin-right: 0.35em;
+  vertical-align: -0.125em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+/* Course mascot mark: same geometric line style as .icon, but drawn in the
+   accent color specifically (rather than inheriting currentColor) so the
+   small robot reads as a fixed logo mark next to the site title on every
+   page, regardless of surrounding text color. */
+.icon-mascot {
+  width: 1.15em;
+  height: 1.15em;
+  margin-right: 0.3em;
+  stroke: var(--accent);
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--fb);      /* bold sans headings (Twenty Nineteen) */
   font-weight: 700;
