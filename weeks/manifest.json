@@ -1,19 +1,13 @@
 {
   "01": {
-    "by": null,
-    "published_at": null,
     "source_sha": "ae97a7abbcc4cefb45256ae83fe4fee9fbe8aaf7",
     "state": "live"
   },
   "02": {
-    "by": null,
-    "published_at": null,
     "source_sha": "ae97a7abbcc4cefb45256ae83fe4fee9fbe8aaf7",
     "state": "live"
   },
   "03": {
-    "by": null,
-    "published_at": null,
     "source_sha": "04dec37fae99154b15461e482e61d7a3f3104841",
     "state": "live"
   },

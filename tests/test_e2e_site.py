@@ -1,13 +1,14 @@
 """End-to-end tests: site completeness, page counts, and reachability."""
+import re
 import pytest
 from urllib.parse import unquote
 from pathlib import Path
 
 SITE_ROOT = Path(__file__).parent.parent
 
-EXPECTED_TOTAL_PAGES = 28
+EXPECTED_TOTAL_PAGES = 22
 EXPECTED_CORE_FILES = {
-    "about.html", "admin.html", "assignments.html", "policies.html", "schedule.html", "syllabus.html",
+    "about.html", "assignments.html", "policies.html", "schedule.html", "syllabus.html",
 }
 EXPECTED_WEEK_FILES = {f"week-{n:02d}.html" for n in range(1, 16)}
 
@@ -28,8 +29,7 @@ class TestRequiredFiles:
 
 class TestPageCount:
     def test_exact_total_page_count(self, all_html_files):
-        """Site must have exactly 28 HTML pages (index, 404, login, register, forgot-password,
-        reset-password, account, 6 core, 15 weeks)."""
+        """Site must have exactly 22 HTML pages (index, 404, 5 core, 15 weeks)."""
         count = len(all_html_files)
         files = [str(f.relative_to(SITE_ROOT)) for f in all_html_files]
         assert count == EXPECTED_TOTAL_PAGES, (
@@ -39,7 +39,7 @@ class TestPageCount:
 
 class TestCoreDirectoryContents:
     def test_core_has_exactly_expected_files(self, site_root):
-        """core/ must contain exactly the 5 expected page files."""
+        """core/ must contain exactly the expected page files."""
         actual = {f.name for f in (site_root / "core").glob("*.html")}
         missing = EXPECTED_CORE_FILES - actual
         extra = actual - EXPECTED_CORE_FILES
@@ -59,18 +59,40 @@ class TestWeeksDirectoryContents:
         )
 
 
-UNLINKED_AUTH_PAGES = {
-    "login.html", "register.html", "core/admin.html",
-    "forgot-password.html", "reset-password.html", "account.html",
-}
+class TestNoDeadBackendReferences:
+    """Regression guard: the site's Netlify Identity/Functions backend (and its
+    auth UI) was fully removed. This must not silently reappear.
+
+    Scoped to actual backend integration points (paths, config files, the
+    identity widget), not the bare word "Netlify" — core/assignments.html
+    legitimately mentions Netlify as one of several example deploy targets
+    in course content, and that's not a backend reference.
+    """
+
+    DEAD_BACKEND_PATTERNS = [
+        r"/\.netlify/",
+        r"netlify\.toml",
+        r"netlify/functions",
+        r"netlify/edge-functions",
+        r"netlify-identity",
+        r"identity\.netlify\.com",
+    ]
+
+    def test_no_netlify_backend_references_remain(self, all_html_files, site_root):
+        pattern = re.compile("|".join(self.DEAD_BACKEND_PATTERNS), re.IGNORECASE)
+        files_to_scan = list(all_html_files) + sorted((site_root / "css").glob("*.js"))
+        hits = []
+        for f in files_to_scan:
+            text = f.read_text(encoding="utf-8", errors="replace")
+            if pattern.search(text):
+                hits.append(_rel(f))
+        assert not hits, f"Files still reference the removed Netlify backend: {hits}"
 
 
 class TestReachability:
     def test_all_pages_except_404_reachable_from_index(self, site_root, all_html_files):
-        """BFS from index.html over local <a href> links must reach every page except 404.html
-        and the auth pages (login/register/forgot-password/reset-password/account are reached
-        via redirect or direct navigation, not homepage nav links; admin is admin-only and
-        intentionally not linked from public pages)."""
+        """BFS from index.html over local <a href> links must reach every page except 404.html,
+        which is a server-served fallback page intentionally not linked from navigation or content."""
         index = site_root / "index.html"
         visited = set()
         queue = [index.resolve()]
@@ -95,8 +117,7 @@ class TestReachability:
                     queue.append(target)
 
         expected_reachable = {
-            f.resolve() for f in all_html_files
-            if f.name != "404.html" and _rel(f) not in UNLINKED_AUTH_PAGES
+            f.resolve() for f in all_html_files if f.name != "404.html"
         }
         unreached = expected_reachable - visited
         unreached_rel = sorted(_rel(f) for f in unreached)

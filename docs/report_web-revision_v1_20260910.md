@@ -9,6 +9,8 @@ The site is a clean, dependency-free static build with a genuinely good test sui
 
 Findings are ordered roughly by severity/impact, not by file.
 
+**Update (2026-09-10):** The authentication system described in §1 has been removed. `login.html`, `register.html`, `forgot-password.html`, `reset-password.html`, `account.html`, `core/admin.html`, and `css/auth-nav.js` are deleted, along with the `<script src=".../auth-nav.js">` tag on every remaining page, the `.main-nav a.admin-dashboard-link` CSS rule, and the corresponding test expectations (`EXPECTED_TOTAL_PAGES`, `EXPECTED_CORE_FILES`, `UNLINKED_AUTH_PAGES`) in `tests/test_e2e_site.py`. This is option 1 of the §1 recommendation: the auth UI only ever worked by calling Netlify backend functions (`/.netlify/functions/*`), and those functions — along with `netlify.toml` and the Netlify deploy workflow — were already stripped from the repo in an earlier commit, leaving every login/register/account/admin form and the site-wide session-check script permanently non-functional. Rather than stand up a replacement backend, the dead client-side auth UI is now gone too, so the site is fully static with no login state. §1 and its related references elsewhere in this report (§7, §8, priority item 1) describe the prior state and are kept as-is for historical record.
+
 ---
 
 ## 0. Snapshot caveat

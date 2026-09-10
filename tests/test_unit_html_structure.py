@@ -1,7 +1,9 @@
 """Unit tests: every HTML page has valid structure and required elements."""
+import re
 from pathlib import Path
 
 SITE_ROOT = Path(__file__).parent.parent
+STYLE_CSS = SITE_ROOT / "css" / "style.css"
 
 TITLE_SUFFIX = "– IPHS 400: Frontiers in AI"  # en dash
 FOOTER_TEXT = "IPHS 400: Frontiers in AI · Kenyon College"
@@ -102,6 +104,23 @@ class TestNoLeftoverBranding:
         ]
         assert not failures, f"Pages with .placeholder-notice: {failures[:15]}"
 
+    def test_notice_pending_class_is_styled(self, parsed_pages):
+        """Pages using .notice.notice-pending must have that class styled in css/style.css.
+
+        Regression guard for the H1 defect: markup was renamed from
+        .placeholder-notice to "notice notice-pending" but the CSS rule was
+        never renamed to match, so the banner rendered unstyled.
+        """
+        used = any(
+            soup.select_one(".notice.notice-pending")
+            for _, _, soup in parsed_pages
+        )
+        assert used, "expected at least one page to use .notice.notice-pending"
+        css_text = STYLE_CSS.read_text()
+        assert re.search(r"\.notice\.notice-pending\s*{", css_text), (
+            "css/style.css has no rule for .notice.notice-pending"
+        )
+
     def test_no_stub_or_placeholder_strings(self, parsed_pages):
         """No page should contain literal 'Lorem ipsum', 'TBD', or 'TODO' text."""
         failures = []
@@ -110,6 +129,120 @@ class TestNoLeftoverBranding:
             if hits:
                 failures.append(f"{_rel(path)}: {hits}")
         assert not failures, f"Pages with stub/placeholder strings: {failures[:15]}"
+
+
+class TestNoDuplicatedOwnedContent:
+    """Regression guard for H2: about/policies/assignments each own one block
+    of content; syllabus.html must link out to it, not duplicate it.
+    """
+
+    def test_syllabus_does_not_duplicate_about_description(self, site_root):
+        about_text = (site_root / "core" / "about.html").read_text()
+        syllabus_text = (site_root / "core" / "syllabus.html").read_text()
+        marker = "hands-on study of the AI frontier"
+        assert marker in about_text
+        assert marker not in syllabus_text
+
+    def test_syllabus_does_not_duplicate_secrets_hygiene(self, site_root):
+        policies_text = (site_root / "core" / "policies.html").read_text()
+        syllabus_text = (site_root / "core" / "syllabus.html").read_text()
+        marker = "The first leaked key is a learning moment"
+        assert marker in policies_text
+        assert marker not in syllabus_text
+
+    def test_syllabus_does_not_duplicate_assignment_weights(self, site_root):
+        assignments_text = (site_root / "core" / "assignments.html").read_text()
+        syllabus_text = (site_root / "core" / "syllabus.html").read_text()
+        marker = "Mini-Project 3 — Harness + Hooks (graded)"
+        assert marker in assignments_text
+        assert marker not in syllabus_text
+
+
+class TestCSSCoverage:
+    def test_every_html_class_is_defined_in_css(self, parsed_pages):
+        """Every class="..." token used in markup must appear as a class
+        selector somewhere in css/style.css.
+
+        Regression guard for H1: markup was renamed to "notice notice-pending"
+        but the CSS selector was never renamed to match, so it silently
+        rendered unstyled. This is a superset check (any ".token" appearing
+        anywhere in the CSS text counts as "defined"), which is deliberately
+        permissive but still catches a used-but-never-defined class.
+        """
+        css_text = STYLE_CSS.read_text()
+        defined = set(re.findall(r"\.([a-zA-Z][\w-]*)", css_text))
+
+        used = {}
+        for path, _, soup in parsed_pages:
+            for tag in soup.find_all(class_=True):
+                for cls in tag.get("class", []):
+                    used.setdefault(cls, _rel(path))
+
+        undefined = {cls: used[cls] for cls in used if cls not in defined}
+        assert not undefined, f"Classes used in HTML but not styled in css/style.css: {undefined}"
+
+
+class TestCSSDeadCode:
+    def test_no_has_featured_image_block(self):
+        """The unused hero-image duotone variant (.has-featured-image /
+        .featured-media) must stay removed from css/style.css; the active
+        .no-featured-image rules must remain untouched."""
+        css_text = STYLE_CSS.read_text()
+        assert "has-featured-image" not in css_text
+        assert "featured-media" not in css_text
+        assert "no-featured-image" in css_text
+
+
+class TestAccessibility:
+    def test_all_pages_have_skip_link_to_main(self, parsed_pages):
+        """Every page must have a skip link as the first element in <body>
+        pointing to an element with id="main"."""
+        failures = []
+        for path, _, soup in parsed_pages:
+            body = soup.body
+            first_tag = body.find(True) if body else None
+            if not (
+                first_tag
+                and first_tag.name == "a"
+                and "skip-link" in (first_tag.get("class") or [])
+                and first_tag.get("href") == "#main"
+            ):
+                failures.append(_rel(path))
+        assert not failures, f"Pages missing a leading .skip-link[href='#main']: {failures[:15]}"
+
+    def test_all_pages_have_main_with_id(self, parsed_pages):
+        """Every page's <main class="content-wrapper"> must carry id="main"
+        so the skip link has a target."""
+        failures = []
+        for path, _, soup in parsed_pages:
+            main = soup.select_one("main.content-wrapper")
+            if not main or main.get("id") != "main":
+                failures.append(_rel(path))
+        assert not failures, f"Pages missing <main id='main'>: {failures[:15]}"
+
+    def test_active_nav_link_has_aria_current(self, nav_pages, parsed_pages):
+        """Every nav link with class="active" must also have aria-current="page"."""
+        by_path = {p: (t, s) for p, t, s in parsed_pages}
+        failures = []
+        for path in nav_pages:
+            _, soup = by_path[path]
+            active_links = soup.select("nav.main-nav a.active")
+            if not active_links:
+                failures.append(f"{_rel(path)}: no active nav link found")
+                continue
+            for link in active_links:
+                if link.get("aria-current") != "page":
+                    failures.append(f"{_rel(path)}: active nav link missing aria-current='page'")
+        assert not failures, f"aria-current issues: {failures[:15]}"
+
+    def test_all_pages_have_meta_description(self, parsed_pages):
+        """Every page must declare a non-empty <meta name="description">."""
+        failures = []
+        for path, _, soup in parsed_pages:
+            meta = soup.find("meta", attrs={"name": "description"})
+            if not meta or not (meta.get("content") or "").strip():
+                failures.append(_rel(path))
+        assert not failures, f"Pages missing meta description: {failures[:15]}"
 
 
 class TestContentNotEmpty:
