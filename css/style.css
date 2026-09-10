@@ -14,11 +14,29 @@
   --code-bg: #f5f5f5;
   --draft: #ff9800;
   --priv: #e91e63;
+  --notice-bg: #fff3e0;
   --fh: "NonBreakingSpaceOverride", "Hoefler Text", Garamond, "Times New Roman", serif;
   --fb: "NonBreakingSpaceOverride", -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   --mw: 640px;             /* text column measure */
   --mww: 1168px;
   --col-left: calc(8.33vw + 28px);  /* left offset of the content column */
+}
+
+/* Dark mode: toggled via data-theme="dark" on <html>, persisted in
+   localStorage (see js/theme-toggle.js). Same token set, different values —
+   every rule below already reads colors through these custom properties. */
+:root[data-theme="dark"] {
+  --bg: #14181b;
+  --text: #e8e6e2;
+  --text-lt: #9a9a9a;
+  --accent: #5ec2f0;
+  --accent-dk: #8fd4f5;
+  --primary: #5ec2f0;
+  --border: #333d42;
+  --code-bg: #1e2427;
+  --draft: #ffb74d;
+  --priv: #f06fa0;
+  --notice-bg: #3a2f1a;
 }
 
 /* Reset */
@@ -213,6 +231,55 @@ h1, h2, h3, h4, h5, h6 {
 }
 .social-nav a:hover {
   text-decoration: underline;
+}
+
+/* Dark mode toggle */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.1rem;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--fb);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-lt);
+  cursor: pointer;
+}
+.theme-toggle:hover {
+  color: var(--text);
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.theme-toggle-track {
+  position: relative;
+  display: inline-block;
+  width: 2.4em;
+  height: 1.3em;
+  border-radius: 1em;
+  background: var(--border);
+  transition: background 0.15s ease;
+}
+.theme-toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(1.3em - 4px);
+  height: calc(1.3em - 4px);
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  transition: transform 0.15s ease;
+}
+[data-theme="dark"] .theme-toggle-track {
+  background: var(--accent);
+}
+[data-theme="dark"] .theme-toggle-thumb {
+  transform: translateX(1.1em);
 }
 
 /* ===================== */
@@ -504,7 +571,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Placeholder notice */
 .notice.notice-pending {
   font-family: var(--fb);
-  background: #fff3e0;
+  background: var(--notice-bg);
   border: 2px dashed var(--draft);
   padding: 1.5rem;
   border-radius: 8px;
@@ -582,7 +649,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .item-list li {
   padding: 0.5rem 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border);
 }
 .item-list li:last-child {
   border-bottom: none;
