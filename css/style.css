@@ -516,6 +516,54 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ===================== */
+/*   Week progress       */
+/* ===================== */
+
+.week-progress {
+  margin: 1.25rem 0 0 var(--col-left);
+  max-width: var(--mww);
+  padding-right: 2rem;
+}
+.week-progress-label {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  column-gap: 1rem;
+  font-family: var(--fb);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-lt);
+  margin-bottom: 0.4rem;
+}
+.week-progress-detail {
+  font-weight: 400;
+}
+.week-progress-track {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
+}
+.week-progress-segment {
+  flex: 1 1 0;
+  height: 8px;
+  min-width: 0;
+  border-radius: 2px;
+  background: var(--code-bg);
+  border: 1px solid var(--text-lt);
+}
+.week-progress-segment.is-live {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.week-progress-segment.is-pending {
+  background: var(--code-bg);
+  border-color: var(--text-lt);
+}
+
+/* ===================== */
 /*   Sections & Lists    */
 /* ===================== */
 
@@ -604,6 +652,36 @@ h1, h2, h3, h4, h5, h6 {
 /* ===================== */
 /*   Responsive          */
 /* ===================== */
+
+/* ===================== */
+/*   Homepage (single-   */
+/*   viewport layout)    */
+/* ===================== */
+
+body.home .site-header {
+  padding-top: 20px;
+}
+body.home .site-header .hero {
+  margin-top: 1.25rem;
+  margin-bottom: 0;
+}
+body.home .site-header .hero h1::before {
+  margin-bottom: 0.6rem;
+}
+body.home .content-wrapper {
+  padding-top: 1.25rem;
+  padding-bottom: 1.5rem;
+}
+body.home .page-content p {
+  margin: 1rem 0;
+}
+body.home .footer-rule {
+  margin-top: 1rem;
+}
+body.home .site-footer {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
 
 @media (max-width: 1024px) {
   :root {
